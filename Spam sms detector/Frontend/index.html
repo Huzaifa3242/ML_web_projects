@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spam Checker</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f4f7fc;
+      font-family: 'Arial', sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      padding: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+    .btn-custom {
+      background-color: #007bff;
+      color: white;
+      border-radius: 50px;
+      padding: 12px 25px;
+      border: none;
+      transition: all 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+    .result {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="text-center mb-4">Check if Email is Spam</h2>
+    <div class="mb-3">
+      <label for="emailInput" class="form-label">Enter Email Content</label>
+      <textarea class="form-control" id="emailInput" rows="5" placeholder="Enter email content here..."></textarea>
+    </div>
+    <button class="btn btn-custom w-100" id="checkSpamButton">Check if Spam</button>
+    <div class="result text-center mt-4" id="resultMessage"></div>
+  </div>
+
+  <script>
+    document.getElementById('checkSpamButton').addEventListener('click', async function() {
+      const emailContent = document.getElementById('emailInput').value;
+      
+      if (!emailContent) {
+        document.getElementById('resultMessage').textContent = 'Please enter some email content.';
+        document.getElementById('resultMessage').style.color = 'red';
+        return;
+      }
+
+     
+        // Dummy API endpoint - Replace this with your server endpoint
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: emailContent })
+        });
+
+        const data = await response.json();
+
+      
+        document.getElementById('resultMessage').textContent = data.prediction;
+        document.getElementById('resultMessage').style.color = 'red';
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
