@@ -3,64 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spam Checker</title>
+  <title>SMS Spam Detector</title>
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
     body {
-      background-color: #f4f7fc;
-      font-family: 'Arial', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
     }
-    .container {
+
+    .box {
+      background-color: #1e1e1e;
+      padding: 40px;
+      border-radius: 15px;
+      width: 100%;
       max-width: 600px;
-      padding: 30px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 50px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
     }
+
+    .form-label {
+      color: #ccc;
+    }
+
+    .form-control {
+      background-color: #2c2c2c;
+      color: #fff;
+      border: none;
+    }
+
+    .form-control::placeholder {
+      color: #777;
+    }
+
     .btn-custom {
-      background-color: #007bff;
+      background-color: #0d6efd;
       color: white;
+      border: none;
       border-radius: 50px;
       padding: 12px 25px;
-      border: none;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
+
     .btn-custom:hover {
-      background-color: #0056b3;
+      background-color: #0a58ca;
       transform: translateY(-2px);
     }
+
     .result {
+      margin-top: 20px;
       font-weight: bold;
       font-size: 1.2rem;
-      margin-top: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2 class="text-center mb-4">Check if Email is Spam</h2>
+  <div class="box">
+    <h2 class="text-center mb-4">SMS Spam Detector</h2>
     <div class="mb-3">
-      <label for="emailInput" class="form-label">Enter Email Content</label>
-      <textarea class="form-control" id="emailInput" rows="5" placeholder="Enter email content here..."></textarea>
+      <label for="emailInput" class="form-label">Enter Sms Content</label>
+      <textarea class="form-control" id="emailInput" rows="6" placeholder="Paste your sms here..."></textarea>
     </div>
-    <button class="btn btn-custom w-100" id="checkSpamButton">Check if Spam</button>
-    <div class="result text-center mt-4" id="resultMessage"></div>
+    <button class="btn btn-custom w-100" id="checkSpamButton">Check Now</button>
+    <div class="result" id="resultMessage"></div>
   </div>
 
   <script>
-    document.getElementById('checkSpamButton').addEventListener('click', async function() {
-      const emailContent = document.getElementById('emailInput').value;
-      
+    document.getElementById('checkSpamButton').addEventListener('click', async function () {
+      const emailContent = document.getElementById('emailInput').value.trim();
+      const resultDiv = document.getElementById('resultMessage');
+
       if (!emailContent) {
-        document.getElementById('resultMessage').textContent = 'Please enter some email content.';
-        document.getElementById('resultMessage').style.color = 'red';
+        resultDiv.textContent = 'Please enter some sms content.';
+        resultDiv.style.color = 'red';
         return;
       }
 
-     
-        // Dummy API endpoint - Replace this with your server endpoint
+      try {
         const response = await fetch('http://127.0.0.1:5000/predict', {
           method: 'POST',
           headers: {
@@ -70,15 +97,16 @@
         });
 
         const data = await response.json();
-
-      
-        document.getElementById('resultMessage').textContent = data.prediction;
-        document.getElementById('resultMessage').style.color = 'red';
+        resultDiv.textContent = data.prediction;
+        resultDiv.style.color = data.prediction.toLowerCase().includes('spam') ? 'red' : 'lightgreen';
+      } catch (error) {
+        resultDiv.textContent = 'Error: Could not connect to the server.';
+        resultDiv.style.color = 'orange';
+      }
     });
   </script>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
