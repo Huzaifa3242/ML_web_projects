@@ -1,6 +1,7 @@
 import streamlit as st
 import preprocessing
 import helper
+import matplotlib.pyplot as plt
 
 st.sidebar.title("Whatsapp Chat Analyzer")
 file=st.sidebar.file_uploader("Choose a file")
@@ -39,7 +40,31 @@ if file is not None:
             st.title(links)
         
 
-        # finding the busiest users
+        # finding the busiest users for group level
+        if selected_user=="Overall":
+            st.title("Most Busy Users")
+            x,new_df= helper.fetch_most_busy_users(df)
+            fig,ax= plt.subplots()
+            col1,col2=st.columns(2)
+
+            with col1:
+                ax.bar(x.index,x.values,color="green")
+                plt.xticks(rotation=50)
+                st.pyplot(fig)
+            with col2:
+                st.dataframe(new_df, width=800)
+        
+
+        # Wordcloud
+        st.title("Word Cloud")
+        df_wc=helper.create_wordcloud(selected_user,df)
+        fig,ax=plt.subplots()
+        ax.imshow(df_wc)
+        st.pyplot(fig)
+
+        
+
+
 
 
 
